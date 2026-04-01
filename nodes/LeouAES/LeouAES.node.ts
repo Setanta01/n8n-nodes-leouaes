@@ -6,20 +6,6 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import * as crypto from 'crypto';
-import * as fs from 'fs';
-import * as path from 'path';
-
-const KEY_FILE = path.join(__dirname, '..', '..', 'leouaes.key');
-
-function getOrCreateKey(): Buffer {
-  if (fs.existsSync(KEY_FILE)) {
-    const raw = fs.readFileSync(KEY_FILE, 'utf8').trim();
-    return Buffer.from(raw, 'hex');
-  }
-  const key = crypto.randomBytes(32);
-  fs.writeFileSync(KEY_FILE, key.toString('hex'), 'utf8');
-  return key;
-}
 
 function encrypt(text: string, key: Buffer): string {
   const iv = crypto.randomBytes(16);
@@ -38,21 +24,21 @@ function decrypt(encryptedText: string, key: Buffer): string {
   return Buffer.concat([decipher.update(data), decipher.final()]).toString('utf8');
 }
 
-export class LeouAES implements INodeType {
+export class LeouAes implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'LeouAES',
-    name: 'leouAES',
+    name: 'leouAes',
     icon: { light: 'file:leouaes.svg', dark: 'file:leouaes.dark.svg' },
     group: ['transform'],
     version: [1],
-    description: 'Encrypt e Decrypt AES-256 com chave persistente',
+    description: 'Encrypt e Decrypt AES-256',
     defaults: { name: 'LeouAES' },
     inputs: [NodeConnectionTypes.Main],
     outputs: [NodeConnectionTypes.Main],
     usableAsTool: true,
     properties: [
       {
-        displayName: 'Operação',
+        displayName: 'Operation',
         name: 'operation',
         type: 'options',
         noDataExpression: true,
@@ -73,7 +59,17 @@ export class LeouAES implements INodeType {
         default: 'encrypt',
       },
       {
-        displayName: 'Texto',
+        displayName: 'AES Key (32 Characters)',
+        name: 'aesKey',
+        type: 'string',
+        typeOptions: { password: true },
+        default: '',
+        required: true,
+        placeholder: 'Chave de 32 caracteres (256 bits)',
+        description: 'Chave secreta AES-256. Deve ter exatamente 32 caracteres.',
+      },
+      {
+        displayName: 'Text',
         name: 'text',
         type: 'string',
         default: '',
@@ -89,19 +85,23 @@ export class LeouAES implements INodeType {
     const items = this.getInputData();
     const returnData: INodeExecutionData[] = [];
 
-    let key: Buffer;
-    try {
-      key = getOrCreateKey();
-    } catch (error) {
-      throw new NodeOperationError(this.getNode(), 'Erro ao carregar ou criar a chave AES: ' + error.message);
-    }
-
     for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
       try {
         const operation = this.getNodeParameter('operation', itemIndex) as string;
+        const aesKey = this.getNodeParameter('aesKey', itemIndex) as string;
         const text = this.getNodeParameter('text', itemIndex) as string;
 
+        if (aesKey.length !== 32) {
+          throw new NodeOperationError(
+            this.getNode(),
+            'A chave AES deve ter exatamente 32 caracteres (256 bits).',
+            { itemIndex },
+          );
+        }
+
+        const key = Buffer.from(aesKey, 'utf8');
         let output: string;
+
         if (operation === 'encrypt') {
           output = encrypt(text, key);
         } else {
@@ -113,7 +113,6 @@ export class LeouAES implements INodeType {
             operation,
             input: text,
             output,
-            keyFile: KEY_FILE,
             processedAt: new Date().toISOString(),
           },
           pairedItem: itemIndex,

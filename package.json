@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "description": "Node de Encrypt e Decrypt AES-256 para n8n",
     "license": "MIT",
-    "homepage": "",
+    "homepage": "https://github.com/Setanta01/n8n-nodes-leouaes",
     "keywords": [
         "n8n-community-node-package",
         "n8n",
@@ -13,12 +13,12 @@
         "cryptography"
     ],
     "author": {
-        "name": "",
-        "email": ""
+        "name": "Setanta01",
+        "email": "leovanderley12@gmail.com"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/<...>/n8n-nodes-leouaes.git"
+        "url": "https://github.com/Setanta01/n8n-nodes-leouaes.git"
     },
     "scripts": {
         "build": "n8n-node build",
@@ -37,7 +37,8 @@
         "strict": true,
         "credentials": [],
         "nodes": [
-            "dist/nodes/LeouAES/LeouAES.node.js"
+            "dist/nodes/LeouAES/LeouAes.node.js",
+            "dist/nodes/GerarChave/GerarChaveAes.node.js"
         ]
     },
     "devDependencies": {
