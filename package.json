@@ -1,6 +1,6 @@
 {
     "name": "n8n-nodes-leouaes",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Node de Encrypt e Decrypt AES-256 para n8n",
     "license": "MIT",
     "homepage": "https://github.com/Setanta01/n8n-nodes-leouaes",
@@ -18,7 +18,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Setanta01/n8n-nodes-leouaes.git"
+        "url": "git+https://github.com/Setanta01/n8n-nodes-leouaes.git"
     },
     "scripts": {
         "build": "n8n-node build",
@@ -30,7 +30,10 @@
         "prepublishOnly": "n8n-node prerelease"
     },
     "files": [
-        "dist"
+        "dist/nodes/**/*.js",
+        "dist/nodes/**/*.svg",
+        "dist/nodes/**/*.d.ts",
+        "README.md"
     ],
     "n8n": {
         "n8nNodesApiVersion": 1,
