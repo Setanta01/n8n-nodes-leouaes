@@ -1,0 +1,25 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+
+# Chave AES (NUNCA commitar!)
+*.key
+leouaes.key
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Env
+.env
+.env.*
