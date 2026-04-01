@@ -1,6 +1,6 @@
 {
     "name": "n8n-nodes-leouaes",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Node de Encrypt e Decrypt AES-256 para n8n",
     "license": "MIT",
     "homepage": "https://github.com/Setanta01/n8n-nodes-leouaes",
